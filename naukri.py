@@ -259,13 +259,16 @@ def UpdateProfile(driver):
 
             WaitTillElementPresent(driver, mobXpath, "XPATH", 20)
             mobFieldElement = GetElement(driver, mobXpath, locator="XPATH")
-            mobFieldElement.clear()
-            mobFieldElement.send_keys(mob)
-            driver.implicitly_wait(2)
-
-            saveFieldElement = GetElement(driver, saveXpath, locator="XPATH")
-            saveFieldElement.send_keys(Keys.ENTER)
-            driver.implicitly_wait(3)
+            if mobFieldElement:
+                mobFieldElement.clear()
+                mobFieldElement.send_keys(mob)
+                driver.implicitly_wait(2)
+                
+                saveFieldElement = GetElement(driver, saveXpath, locator="XPATH")
+                saveFieldElement.send_keys(Keys.ENTER)
+                driver.implicitly_wait(3)
+            else:
+                log_msg("Mobile number element not found in UI")
 
             WaitTillElementPresent(driver, save_confirm, "XPATH", 10)
             if is_element_present(driver, By.XPATH, save_confirm):
@@ -275,13 +278,16 @@ def UpdateProfile(driver):
 
         elif is_element_present(driver, By.XPATH, saveXpath):
             mobFieldElement = GetElement(driver, mobXpath, locator="XPATH")
-            mobFieldElement.clear()
-            mobFieldElement.send_keys(mob)
-            driver.implicitly_wait(2)
-
-            saveFieldElement = GetElement(driver, saveXpath, locator="XPATH")
-            saveFieldElement.send_keys(Keys.ENTER)
-            driver.implicitly_wait(3)
+            if mobFieldElement:
+                mobFieldElement.clear()
+                mobFieldElement.send_keys(mob)
+                driver.implicitly_wait(2)
+    
+                saveFieldElement = GetElement(driver, saveXpath, locator="XPATH")
+                saveFieldElement.send_keys(Keys.ENTER)
+                driver.implicitly_wait(3)
+            else:
+                log_msg("Mobile number element not found in UI")
 
             WaitTillElementPresent(driver, "confirmMessage", locator="ID", timeout=10)
             if is_element_present(driver, By.ID, "confirmMessage"):
