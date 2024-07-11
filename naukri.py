@@ -35,6 +35,9 @@ mob = "1234567890"  # Type your mobile number here
 # False if you dont want to add Random HIDDEN chars to your resume
 updatePDF = True
 
+# If Headless = True, script runs Chrome in headless mode without visible GUI
+headless = False
+
 # ----- No other changes required -----
 
 # Set login URL
@@ -389,7 +392,7 @@ def main():
     log_msg("-----Naukri.py Script Run Begin-----")
     driver = None
     try:
-        status, driver = naukriLogin()
+        status, driver = naukriLogin(headless)
         if status:
             UpdateProfile(driver)
             if os.path.exists(originalResumePath):
