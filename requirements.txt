@@ -1,4 +1,4 @@
 reportlab==4.2.2
-webdriver_manager==4.0.1
+webdriver_manager==4.0.2
 selenium==4.23.1
 pypdf>=3.9.0
