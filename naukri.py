@@ -357,8 +357,7 @@ def UploadResume(driver, resumePath):
 
         WaitTillElementPresent(driver, attachCVID, locator="ID", timeout=10)
         AttachElement = GetElement(driver, attachCVID, locator="ID")
-        pathNew = os.path.abspath(resumePath)
-        AttachElement.send_keys(pathNew)
+        AttachElement.send_keys(os.path.abspath(resumePath))
 
         if WaitTillElementPresent(driver, saveXpath, locator="ID", timeout=5):
             saveElement = GetElement(driver, saveXpath, locator="XPATH")
