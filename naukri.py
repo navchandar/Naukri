@@ -327,11 +327,10 @@ def UpdateResume():
         # Merging new pdf with last page of my existing pdf
         # Updated to get last page for pdf files with varying page count
         for pageNum in range(pagecount - 1):
-            output.addPage(existing_pdf.get_page_number(pageNum))
-
-        page = existing_pdf.get_page_number(pagecount - 1)
-        page.mergePage(new_pdf.get_page_number(0))
-        output.addPage(page)
+            output.add_page(existing_pdf.pages[pageNum])
+        page = existing_pdf.pages[pagecount - 1]
+        page.merge_page(new_pdf.pages[0])
+        output.add_page(page)
         # save the new resume file
         with open(modifiedResumePath, "wb") as outputStream:
             output.write(outputStream)
@@ -358,7 +357,7 @@ def UploadResume(driver, resumePath):
 
         WaitTillElementPresent(driver, attachCVID, locator="ID", timeout=10)
         AttachElement = GetElement(driver, attachCVID, locator="ID")
-        AttachElement.send_keys(resumePath)
+        AttachElement.send_keys(os.path.abspath(resumePath))
 
         if WaitTillElementPresent(driver, saveXpath, locator="ID", timeout=5):
             saveElement = GetElement(driver, saveXpath, locator="XPATH")
