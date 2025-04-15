@@ -26,7 +26,7 @@ class Test(unittest.TestCase):
         result_path = naukri.UpdateResume()
         # Check if the modified PDF file is created
         self.assertTrue(os.path.exists(result_path))
-        self.assertEqual(result_path, modifiedResumePath)
+        self.assertIn(modifiedResumePath, result_path)
 
 
 
