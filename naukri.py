@@ -20,7 +20,8 @@ from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
-from webdriver_manager.chrome import ChromeDriverManager as CM
+from selenium.webdriver.chrome.service import Service as ChromeService
+
 
 # Add folder Path of your resume
 originalResumePath = "original_resume.pdf"
@@ -155,6 +156,7 @@ def randomText():
 
 def LoadNaukri(headless):
     """Open Chrome to load Naukri.com"""
+
     options = webdriver.ChromeOptions()
     options.add_argument("--disable-notifications")
     options.add_argument("--start-maximized")  # ("--kiosk") for MAC
@@ -164,15 +166,16 @@ def LoadNaukri(headless):
         options.add_argument("--disable-dev-shm-usage")
         options.add_argument("headless")
 
-    # updated to use ChromeDriverManager to match correct chromedriver automatically
+    # updated to use latest selenium Chrome service
     driver = None
     try:
-        driver = webdriver.Chrome(options, service=ChromeService(CM().install()))
-    except:
+        driver = webdriver.Chrome(options=options, service=ChromeService())
+    except Exception as e:
+        print(f"Error launching Chrome: {e}")
         driver = webdriver.Chrome(options)
     log_msg("Google Chrome Launched!")
 
-    driver.implicitly_wait(3)
+    driver.implicitly_wait(5)
     driver.get(NaukriURL)
     return driver
 
@@ -190,7 +193,8 @@ def naukriLogin(headless=False):
     try:
         driver = LoadNaukri(headless)
 
-        if "naukri" in driver.title.lower():
+        log_msg(driver.title)
+        if "naukri.com" in driver.title.lower():
             log_msg("Website Loaded Successfully.")
 
         emailFieldElement = None
