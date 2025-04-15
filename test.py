@@ -8,6 +8,8 @@ from pypdf import PdfReader, PdfWriter
 class Test(unittest.TestCase):
     def test_naukri(self):
         (status, driver) = naukri.naukriLogin(headless=True)
+        if not status:
+            print(driver.page_source)
         naukri.tearDown(driver)
         self.assertFalse(status)
 
