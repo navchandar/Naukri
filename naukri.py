@@ -21,17 +21,19 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.chrome.service import Service as ChromeService
-
+from dotenv import load_dotenv
+import constants
+load_dotenv(override=True)
 
 # Add folder Path of your resume
-originalResumePath = "original_resume.pdf"
+originalResumePath = os.getenv('ORIGINAL_RESUME_PATH')
 # Add Path where modified resume should be saved
-modifiedResumePath = "modified_resume.pdf"
+modifiedResumePath = os.getenv('MODIFIED_RESUME_PATH')
 
 # Update your naukri username and password here before running
-username = "Type Your email ID Here"
-password = "Type Your Password Here"
-mob = "1234567890"  # Type your mobile number here
+username = os.getenv('USERNAME')
+password = os.getenv('PASSWORD')
+mob = os.getenv('MOBILE')  # Type your mobile number here
 
 # False if you dont want to add Random HIDDEN chars to your resume
 updatePDF = False
@@ -42,7 +44,7 @@ headless = False
 # ----- No other changes required -----
 
 # Set login URL
-NaukriURL = "https://www.naukri.com/nlogin/login"
+NaukriURL = constants.NAUKRI_LOGIN_URL
 
 logging.basicConfig(
     level=logging.INFO, filename="naukri.log", format="%(asctime)s    : %(message)s"
@@ -355,7 +357,7 @@ def UploadResume(driver, resumePath):
         saveXpath = "//button[@type='button']"
         close_locator = "//*[contains(@class, 'crossIcon')]"
 
-        driver.get("https://www.naukri.com/mnjuser/profile")
+        driver.get(constants.NAUKRI_PROFILE_URL)
 
         time.sleep(2)
         if WaitTillElementPresent(driver, close_locator, "XPATH", 10):

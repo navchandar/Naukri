@@ -27,7 +27,15 @@ python3 -m venv .venv              # create virtual environment for installing d
 pip install -r requirements.txt    # Install dependencies
 ```
 
-Configuration: Update ResumePath, username, password, and mobile number in naukri.py file.
+Configuration: To configure `ResumePath`, `username`, `password`, and `mobile number`, create a `.env` file with the following values:
+
+```env
+ORIGINAL_RESUME_PATH=/path/to/your/original-resume.pdf
+MODIFIED_RESUME_PATH=/path/to/your/modified-resume.pdf
+USERNAME=your-email@example.com
+PASSWORD=yourPassword
+MOBILE=9876543210
+```
 
 ### Run the Script
 ```bash
