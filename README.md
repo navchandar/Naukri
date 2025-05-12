@@ -27,7 +27,7 @@ python3 -m venv .venv              # create virtual environment for installing d
 pip install -r requirements.txt    # Install dependencies
 ```
 
-Configuration: Update ResumePath, username, password, and mobile number in naukri.py file.
+Configuration: Update `RESUME_PATH`, `USERNAME`, `PASSWORD`, and `MOBILE` directly in `constants.py` before running the script.
 
 ### Run the Script
 ```bash
