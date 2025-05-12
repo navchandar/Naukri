@@ -21,19 +21,17 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.chrome.service import Service as ChromeService
-from dotenv import load_dotenv
 import constants
-load_dotenv(override=True)
 
 # Add folder Path of your resume
-originalResumePath = os.getenv('ORIGINAL_RESUME_PATH')
+originalResumePath = constants.ORIGINAL_RESUME_PATH
 # Add Path where modified resume should be saved
-modifiedResumePath = os.getenv('MODIFIED_RESUME_PATH')
+modifiedResumePath = constants.MODIFIED_RESUME_PATH
 
 # Update your naukri username and password here before running
-username = os.getenv('USERNAME')
-password = os.getenv('PASSWORD')
-mob = os.getenv('MOBILE')  # Type your mobile number here
+username = constants.USERNAME
+password = constants.PASSWORD
+mob = constants.MOBILE
 
 # False if you dont want to add Random HIDDEN chars to your resume
 updatePDF = False

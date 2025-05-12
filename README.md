@@ -27,15 +27,7 @@ python3 -m venv .venv              # create virtual environment for installing d
 pip install -r requirements.txt    # Install dependencies
 ```
 
-Configuration: To configure `ResumePath`, `username`, `password`, and `mobile number`, create a `.env` file with the following values:
-
-```env
-ORIGINAL_RESUME_PATH=/path/to/your/original-resume.pdf
-MODIFIED_RESUME_PATH=/path/to/your/modified-resume.pdf
-USERNAME=your-email@example.com
-PASSWORD=yourPassword
-MOBILE=9876543210
-```
+Configuration: Update `RESUME_PATH`, `USERNAME`, `PASSWORD`, and `MOBILE` directly in `constants.py` before running the script.
 
 ### Run the Script
 ```bash
