@@ -17,6 +17,9 @@ class Test(unittest.TestCase):
     def test_update_resume(self):
         originalResumePath = naukri.originalResumePath
         modifiedResumePath = naukri.modifiedResumePath
+        # Ensure the directory for the resume exists
+        os.makedirs(os.path.dirname(originalResumePath), exist_ok=True)
+        os.makedirs(os.path.dirname(modifiedResumePath), exist_ok=True)
 
         # Create a simple PDF file
         packet = io.BytesIO()
