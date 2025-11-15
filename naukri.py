@@ -133,6 +133,72 @@ def WaitTillElementPresent(driver, elementTag, locator="ID", timeout=30):
     driver.implicitly_wait(3)
     return result
 
+def Logout(driver):
+    """Logout from Naukri session """
+
+    try:
+        # -------- Drawer Menu XPaths --------
+        drawer_xpaths = [
+            f"//*[contains({ci('@class')}, 'drawer__icon')]",
+            f"//div[contains({ci('@class')}, 'drawer')]"
+        ]
+
+        for xpath in drawer_xpaths:
+            if is_element_present(driver, By.XPATH, xpath):
+                try:
+                    el = GetElement(driver, xpath, locator="XPATH")
+                    if el:
+                        el.click()
+                        time.sleep(1)
+                        log_msg("Drawer menu opened")
+                        break
+                except Exception as e:
+                    log_msg(f"Drawer open failed ({xpath}): {e}")
+                    continue
+
+        # -------- Logout XPaths --------
+        logout_xpaths = [
+            "//a[@data-type='logoutLink']",
+
+            f"//a[contains({ci('@class')}, 'list-cta') and contains({ci('@title')}, 'logout')]",
+            f"//a[contains({ci('@class')}, 'logout')]",
+            f"//a[contains({ci('@href')}, 'logout')]",
+
+            f"//*[contains({ci('text()')}, 'logout')]",
+            f"//*[contains({ci('.')}, 'logout')]",
+        ]
+
+        for xpath in logout_xpaths:
+            if is_element_present(driver, By.XPATH, xpath):
+                try:
+                    el = GetElement(driver, xpath, locator="XPATH")
+                    if el:
+                        driver.execute_script("arguments[0].scrollIntoView(true);", el)
+                        time.sleep(0.5)
+                        el.click()
+                        time.sleep(2)
+                        log_msg("Logout Successful")
+                        return True
+                except Exception as e:
+                    log_msg(f"Logout click failed ({xpath}): {e}")
+                    continue
+
+        log_msg("Logout button not found")
+        return False
+
+    except Exception as e:
+        log_msg(f"Logout error: {e}")
+        return False
+    
+def ci(xpath_part: str) -> str:
+    """
+    Wraps an XPath string in lowercase translate() for case-insensitive matching.
+    Usage:
+        ci("@class") → "translate(@class,'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz')"
+        ci("text()") → "translate(text(),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz')"
+    """
+    return f"translate({xpath_part},'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz')"
+
 
 def tearDown(driver):
     try:
@@ -418,6 +484,12 @@ def main():
         catch(e)
 
     finally:
+        if driver is not None:
+            try:
+                Logout(driver)
+                time.sleep(2)
+            except Exception as e:
+                log_msg("Error during logout: %s" % e)
         tearDown(driver)
 
     log_msg("-----Naukri.py Script Run Ended-----\n")
