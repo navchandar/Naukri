@@ -133,62 +133,71 @@ def WaitTillElementPresent(driver, elementTag, locator="ID", timeout=30):
     driver.implicitly_wait(3)
     return result
 
-
 def Logout(driver):
-    """Logout from Naukri session"""
+    """Logout from Naukri session """
+
     try:
-        # First, try to click the drawer icon to open the menu
-        drawer_icon_xpaths = [
-            "//*[contains(@class, 'nI-gNb-drawer__icon')]",
-            "//div[@class='nI-gNb-drawer']"
+        # -------- Drawer Menu XPaths --------
+        drawer_xpaths = [
+            f"//*[contains({ci('@class')}, 'drawer__icon')]",
+            f"//div[contains({ci('@class')}, 'drawer')]"
         ]
-        
-        for drawer_xpath in drawer_icon_xpaths:
-            if is_element_present(driver, By.XPATH, drawer_xpath):
+
+        for xpath in drawer_xpaths:
+            if is_element_present(driver, By.XPATH, xpath):
                 try:
-                    drawerElement = GetElement(driver, drawer_xpath, locator="XPATH")
-                    if drawerElement:
-                        drawerElement.click()
+                    el = GetElement(driver, xpath, locator="XPATH")
+                    if el:
+                        el.click()
                         time.sleep(1)
                         log_msg("Drawer menu opened")
                         break
                 except Exception as e:
-                    log_msg("Failed to open drawer with xpath %s: %s" % (drawer_xpath, e))
+                    log_msg(f"Drawer open failed ({xpath}): {e}")
                     continue
-        
-        # Now try to click the logout button
+
+        # -------- Logout XPaths --------
         logout_xpaths = [
             "//a[@data-type='logoutLink']",
-            "//a[contains(@class, 'nI-gNb-list-cta') and @title='Logout']",
-            "//a[contains(@class, 'nI-gNb-list-cta') and contains(@title, 'Logout')]",
-            "//*[contains(text(), 'Logout')]",
-            "//*[contains(text(), 'logout')]",
-            "//*[@class='logOut']",
-            "//a[contains(@href, 'logout')]",
-            "//*[contains(@class, 'logout')]"
+
+            f"//a[contains({ci('@class')}, 'list-cta') and contains({ci('@title')}, 'logout')]",
+            f"//a[contains({ci('@class')}, 'logout')]",
+            f"//a[contains({ci('@href')}, 'logout')]",
+
+            f"//*[contains({ci('text()')}, 'logout')]",
+            f"//*[contains({ci('.')}, 'logout')]",
         ]
-        
-        for logout_xpath in logout_xpaths:
-            if is_element_present(driver, By.XPATH, logout_xpath):
+
+        for xpath in logout_xpaths:
+            if is_element_present(driver, By.XPATH, xpath):
                 try:
-                    logoutElement = GetElement(driver, logout_xpath, locator="XPATH")
-                    if logoutElement:
-                        # Scroll into view and click
-                        driver.execute_script("arguments[0].scrollIntoView(true);", logoutElement)
+                    el = GetElement(driver, xpath, locator="XPATH")
+                    if el:
+                        driver.execute_script("arguments[0].scrollIntoView(true);", el)
                         time.sleep(0.5)
-                        logoutElement.click()
+                        el.click()
                         time.sleep(2)
                         log_msg("Logout Successful")
                         return True
                 except Exception as e:
-                    log_msg("Failed to click logout with xpath %s: %s" % (logout_xpath, e))
+                    log_msg(f"Logout click failed ({xpath}): {e}")
                     continue
-        
-        log_msg("Logout button not found - proceeding with driver shutdown")
+
+        log_msg("Logout button not found")
+        return False
+
     except Exception as e:
-        log_msg("Error during logout attempt: %s" % e)
+        log_msg(f"Logout error: {e}")
+        return False
     
-    return False
+def ci(xpath_part: str) -> str:
+    """
+    Wraps an XPath string in lowercase translate() for case-insensitive matching.
+    Usage:
+        ci("@class") → "translate(@class,'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz')"
+        ci("text()") → "translate(text(),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz')"
+    """
+    return f"translate({xpath_part},'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz')"
 
 
 def tearDown(driver):
