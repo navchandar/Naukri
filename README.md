@@ -23,7 +23,12 @@ git clone https://github.com/navchandar/Naukri.git
 cd Naukri
 pip install --upgrade pip
 python3 -m venv .venv              # create virtual environment for installing dependencies
-./.venv/bin/activate.ps1           # source ./.venv/bin/activate  # command for macOS/linux
+./.venv/bin/activate.ps1  or  ./.venv/Scripts/Activate.ps1      
+# source ./.venv/bin/activate  # command for macOS/linux
+# on windows it should look like this virtual env 
+# PS C:\Users\himan\code\Naukri> & C:/Users/himan/code/Naukri/.venv/Scripts/Activate.ps1
+(.venv) PS C:\Users\himan\code\Naukri> 
+
 pip install -r requirements.txt    # Install dependencies
 ```
 

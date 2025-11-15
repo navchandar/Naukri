@@ -134,6 +134,63 @@ def WaitTillElementPresent(driver, elementTag, locator="ID", timeout=30):
     return result
 
 
+def Logout(driver):
+    """Logout from Naukri session"""
+    try:
+        # First, try to click the drawer icon to open the menu
+        drawer_icon_xpaths = [
+            "//*[contains(@class, 'nI-gNb-drawer__icon')]",
+            "//div[@class='nI-gNb-drawer']"
+        ]
+        
+        for drawer_xpath in drawer_icon_xpaths:
+            if is_element_present(driver, By.XPATH, drawer_xpath):
+                try:
+                    drawerElement = GetElement(driver, drawer_xpath, locator="XPATH")
+                    if drawerElement:
+                        drawerElement.click()
+                        time.sleep(1)
+                        log_msg("Drawer menu opened")
+                        break
+                except Exception as e:
+                    log_msg("Failed to open drawer with xpath %s: %s" % (drawer_xpath, e))
+                    continue
+        
+        # Now try to click the logout button
+        logout_xpaths = [
+            "//a[@data-type='logoutLink']",
+            "//a[contains(@class, 'nI-gNb-list-cta') and @title='Logout']",
+            "//a[contains(@class, 'nI-gNb-list-cta') and contains(@title, 'Logout')]",
+            "//*[contains(text(), 'Logout')]",
+            "//*[contains(text(), 'logout')]",
+            "//*[@class='logOut']",
+            "//a[contains(@href, 'logout')]",
+            "//*[contains(@class, 'logout')]"
+        ]
+        
+        for logout_xpath in logout_xpaths:
+            if is_element_present(driver, By.XPATH, logout_xpath):
+                try:
+                    logoutElement = GetElement(driver, logout_xpath, locator="XPATH")
+                    if logoutElement:
+                        # Scroll into view and click
+                        driver.execute_script("arguments[0].scrollIntoView(true);", logoutElement)
+                        time.sleep(0.5)
+                        logoutElement.click()
+                        time.sleep(2)
+                        log_msg("Logout Successful")
+                        return True
+                except Exception as e:
+                    log_msg("Failed to click logout with xpath %s: %s" % (logout_xpath, e))
+                    continue
+        
+        log_msg("Logout button not found - proceeding with driver shutdown")
+    except Exception as e:
+        log_msg("Error during logout attempt: %s" % e)
+    
+    return False
+
+
 def tearDown(driver):
     try:
         driver.close()
@@ -418,6 +475,12 @@ def main():
         catch(e)
 
     finally:
+        if driver is not None:
+            try:
+                Logout(driver)
+                time.sleep(2)
+            except Exception as e:
+                log_msg("Error during logout: %s" % e)
         tearDown(driver)
 
     log_msg("-----Naukri.py Script Run Ended-----\n")
