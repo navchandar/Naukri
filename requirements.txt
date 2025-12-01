@@ -1,3 +1,3 @@
-reportlab==4.4.4
+reportlab==4.4.5
 selenium==4.38.0
 pypdf==6.4.0
