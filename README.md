@@ -76,11 +76,11 @@ Ensure compliance with Naukri.com’s terms of service. The script does not stor
 
 [Python 3+](https://www.python.org/downloads/)
 
-[Selenium 3+](http://seleniumhq.org/download/)
+[Selenium 3+](https://www.selenium.dev/downloads/)
 
-[Google Chrome](https://www.google.com/intl/en/chrome/browser/desktop/index.html?standalone=1)
+[Google Chrome](https://www.google.com/intl/en/chrome/?standalone=1)
 
-[Chrome Driver](https://chromedriver.chromium.org/downloads)
+[Chrome Driver](https://developer.chrome.com/docs/chromedriver/downloads)
 
-[How to Use Task Scheduler](https://www.wikihow.com/Use-Task-Scheduler-(in-Vista))
+[How to Use Task Scheduler](https://www.wikihow.com/Open-Task-Scheduler-in-Windows-10)
 
