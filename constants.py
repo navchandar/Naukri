@@ -1,8 +1,14 @@
 # Configuration and constants used in the script. Update values as needed.
 
-USERNAME = "your_naukri_username"
-PASSWORD = "your_naukri_password"
-MOBILE = "your_naukri_phone"
+USERNAME1 = "egmox2@gmail.com"
+PASSWORD1 = "india@3g"
+MOBILE1 = "9910638545"
+USERNAME2 = "gulshan.mishra1993@gmail.com"
+PASSWORD2 = "india@3g"
+MOBILE2 = "9968866527"
+USERNAME3 = "ritishashukla68@gmail.com"
+PASSWORD3 = "ritisha13"
+MOBILE3 = "9971512392"
 ORIGINAL_RESUME_PATH="your-resume-file-path/Resume.pdf"
 MODIFIED_RESUME_PATH="modified-resume-file-path/Resume.pdf"
 NAUKRI_LOGIN_URL="https://www.naukri.com/nlogin/login"

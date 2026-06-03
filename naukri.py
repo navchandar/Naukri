@@ -29,15 +29,15 @@ originalResumePath = constants.ORIGINAL_RESUME_PATH
 modifiedResumePath = constants.MODIFIED_RESUME_PATH
 
 # Update your naukri username and password here before running
-username = constants.USERNAME
-password = constants.PASSWORD
-mob = constants.MOBILE
+username = constants.USERNAME1
+password = constants.PASSWORD1
+mob = constants.MOBILE1
 
 # False if you dont want to add Random HIDDEN chars to your resume
 updatePDF = False
 
 # If Headless = True, script runs Chrome in headless mode without visible GUI
-headless = False
+headless = True
 
 # ----- No other changes required -----
 
@@ -225,12 +225,19 @@ def LoadNaukri(headless):
 
     options = webdriver.ChromeOptions()
     options.add_argument("--disable-notifications")
-    options.add_argument("--start-maximized")  # ("--kiosk") for MAC
     options.add_argument("--disable-popups")
-    options.add_argument("--disable-gpu")
+    options.add_argument("--window-size=1920,1080")
+
     if headless:
         options.add_argument("--disable-dev-shm-usage")
-        options.add_argument("headless")
+        options.add_argument("--headless=new")
+        options.add_argument("--no-sandbox")
+
+    options.add_argument(
+        "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Chrome/148.0.0.0 Safari/537.36"
+    )
 
     # updated to use latest selenium Chrome service
     driver = None
@@ -243,10 +250,17 @@ def LoadNaukri(headless):
 
     driver.implicitly_wait(5)
     driver.get(NaukriURL)
+
+    log_msg(f"URL: {driver.current_url}")
+    log_msg(f"Title: {driver.title}")
+
+    with open("page_dump.html", "w", encoding="utf-8") as f:
+        f.write(driver.page_source)
+
     return driver
 
 
-def naukriLogin(headless=False):
+def naukriLogin(headless):
     """Open Chrome browser and Login to Naukri.com"""
     status = False
     driver = None
@@ -470,27 +484,30 @@ def main():
     try:
         status, driver = naukriLogin(headless)
         if status:
-            UpdateProfile(driver)
-            if os.path.exists(originalResumePath):
-                if updatePDF:
-                    resumePath = UpdateResume()
-                    UploadResume(driver, resumePath)
-                else:
-                    UploadResume(driver, originalResumePath)
-            else:
-                log_msg("Resume not found at %s " % originalResumePath)
+            try:
+                log_msg("Starting periodic profile updates every 50 minutes. Press Ctrl+C to stop.")
+                while True:
+                    try:
+                        UpdateProfile(driver)
+                    except Exception as e:
+                        catch(e)
+                        log_msg("Error during UpdateProfile; will retry after interval.")
+                    time.sleep(3000)  # Sleep for 50 minutes before next update
+            except KeyboardInterrupt:
+                log_msg("KeyboardInterrupt received. Stopping periodic updates.")
+            except Exception as e:
+                catch(e)
+            # if os.path.exists(originalResumePath):
+            #     if updatePDF:
+            #         resumePath = UpdateResume()
+            #         UploadResume(driver, resumePath)
+            #     # else:
+            #     #     UploadResume(driver, originalResumePath)
+            # else:
+            #     log_msg("Resume not found at %s " % originalResumePath)
 
     except Exception as e:
         catch(e)
-
-    finally:
-        if driver is not None:
-            try:
-                Logout(driver)
-                time.sleep(2)
-            except Exception as e:
-                log_msg("Error during logout: %s" % e)
-        tearDown(driver)
 
     log_msg("-----Naukri.py Script Run Ended-----\n")
 
