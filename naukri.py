@@ -34,7 +34,10 @@ modifiedResumePath = constants.MODIFIED_RESUME_PATH
 updatePDF = False
 
 # If Headless = True, script runs Chrome in headless mode without visible GUI
-headless = False
+headless = True
+
+# wait for these much time before next profile update. Default is 1 hour (3600 seconds)
+waitTime_oneHour = 60 * 60
 
 # ----- No other changes required -----
 
@@ -529,8 +532,8 @@ def main():
                     Logout(driver)
                     tearDown(driver)
 
-            log_msg("Cycle complete. Sleeping 50 minutes before next update cycle.")
-            time.sleep(3000)  # Sleep for 50 minutes before next cycle
+            log_msg("Cycle complete. Sleeping 1 hour before next update cycle.")
+            time.sleep(waitTime_oneHour)  # Sleep for 1 hour before next cycle
     except KeyboardInterrupt:
         log_msg("KeyboardInterrupt received. Stopping periodic updates.")
     except Exception as e:
