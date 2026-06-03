@@ -29,15 +29,12 @@ originalResumePath = constants.ORIGINAL_RESUME_PATH
 modifiedResumePath = constants.MODIFIED_RESUME_PATH
 
 # Update your naukri username and password here before running
-username = constants.USERNAME1
-password = constants.PASSWORD1
-mob = constants.MOBILE1
 
 # False if you dont want to add Random HIDDEN chars to your resume
 updatePDF = False
 
 # If Headless = True, script runs Chrome in headless mode without visible GUI
-headless = True
+headless = False
 
 # ----- No other changes required -----
 
@@ -260,7 +257,7 @@ def LoadNaukri(headless):
     return driver
 
 
-def naukriLogin(headless):
+def naukriLogin(headless, username, password, mob):
     """Open Chrome browser and Login to Naukri.com"""
     status = False
     driver = None
@@ -478,34 +475,64 @@ def UploadResume(driver, resumePath):
     time.sleep(2)
 
 
+def get_all_accounts():
+    """Return all configured account tuples from constants in the form (username, password, mobile)."""
+    accounts = []
+    index = 1
+    while True:
+        username_attr = f"USERNAME{index}"
+        password_attr = f"PASSWORD{index}"
+        mobile_attr = f"MOBILE{index}"
+
+        if not hasattr(constants, username_attr):
+            break
+
+        if hasattr(constants, password_attr) and hasattr(constants, mobile_attr):
+            accounts.append(
+                (
+                    getattr(constants, username_attr),
+                    getattr(constants, password_attr),
+                    getattr(constants, mobile_attr),
+                )
+            )
+        else:
+            log_msg(f"Skipping incomplete credential set for account {index}.")
+
+        index += 1
+
+    return accounts
+
+
 def main():
     log_msg("-----Naukri.py Script Run Begin-----")
-    driver = None
-    try:
-        status, driver = naukriLogin(headless)
-        if status:
-            try:
-                log_msg("Starting periodic profile updates every 50 minutes. Press Ctrl+C to stop.")
-                while True:
-                    try:
-                        UpdateProfile(driver)
-                    except Exception as e:
-                        catch(e)
-                        log_msg("Error during UpdateProfile; will retry after interval.")
-                    time.sleep(3000)  # Sleep for 50 minutes before next update
-            except KeyboardInterrupt:
-                log_msg("KeyboardInterrupt received. Stopping periodic updates.")
-            except Exception as e:
-                catch(e)
-            # if os.path.exists(originalResumePath):
-            #     if updatePDF:
-            #         resumePath = UpdateResume()
-            #         UploadResume(driver, resumePath)
-            #     # else:
-            #     #     UploadResume(driver, originalResumePath)
-            # else:
-            #     log_msg("Resume not found at %s " % originalResumePath)
+    accounts = get_all_accounts()
+    if not accounts:
+        log_msg("No account credentials found in constants. Exiting.")
+        return
 
+    try:
+        log_msg("Starting periodic profile updates for all configured accounts every 50 minutes. Press Ctrl+C to stop.")
+        while True:
+            for idx, (username, password, mobile) in enumerate(accounts, start=1):
+                log_msg(f"Attempting login for account {idx}.")
+                status, driver = naukriLogin(headless, username, password, mobile)
+                if not status:
+                    log_msg(f"Login failed for account {idx}. Skipping.")
+                    continue
+
+                try:
+                    UpdateProfile(driver)
+                except Exception as e:
+                    catch(e)
+                    log_msg(f"Error during UpdateProfile for account {idx}; will continue to next account.")
+                finally:
+                    Logout(driver)
+                    tearDown(driver)
+
+            log_msg("Cycle complete. Sleeping 50 minutes before next update cycle.")
+            time.sleep(3000)  # Sleep for 50 minutes before next cycle
+    except KeyboardInterrupt:
+        log_msg("KeyboardInterrupt received. Stopping periodic updates.")
     except Exception as e:
         catch(e)
 
