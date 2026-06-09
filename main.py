@@ -506,7 +506,7 @@ def get_all_accounts():
     return accounts
 
 
-def main():
+def handler():
     log_msg("-----Naukri.py Script Run Begin-----")
     accounts = get_all_accounts()
     if not accounts:
