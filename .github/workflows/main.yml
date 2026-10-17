@@ -22,7 +22,7 @@ jobs:
         run: python -c "import sys; print(sys.version)"
 
       - name: Setup Chrome
-        uses: browser-actions/setup-chrome@v1.2.0
+        uses: browser-actions/setup-chrome@v2.2.0
 
       - name: Install dependencies
         run: |
