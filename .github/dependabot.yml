@@ -15,3 +15,9 @@ updates:
     versioning-strategy: increase-if-necessary
     reviewers:
       - "navchandar"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
